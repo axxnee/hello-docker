@@ -4,8 +4,10 @@ const http = require('http');
 const server = http.createServer((req, res) => {
     res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
     res.end(`
-            <h1>🎉 Docker 성공 🎉</h1>
-            <p>ver1.1.1</p>
+            <p>ver1.1</p>
+            <p>🎉 Docker 성공 🎉</p>
+            <p>ver1.2</p>
+            <p>desc 자동배포 구축 완료</p>
         `);
 });
 
