@@ -1,25 +1,32 @@
-name: Docker Build and Test
+name: Docker Build and Deploy to Home PC
 
 on:
   push:
     branches: [main]
-  pull_request:
-    branches: [main]
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    # 핵심: ubuntu-latest 대신 self-hosted를 적어야 내 PC에서 돌아갑니다.
+    runs-on: self-hosted 
 
     steps:
       - name: 코드 체크아웃
         uses: actions/checkout@v3
 
+      - name: 기존 컨테이너 정리
+        # 이미 같은 이름의 컨테이너가 돌고 있으면 에러가 나므로 삭제해줍니다.
+        run: |
+          docker stop hello-app || true
+          docker rm hello-app || true
+
       - name: Docker 이미지 빌드
         run: docker build -t hello-app .
 
-      - name: Docker 컨테이너 실행 테스트
+      - name: Docker 컨테이너 실행
+        # -d를 붙여서 백그라운드에서 계속 돌아가게 합니다.
+        run: docker run -d -p 3000:3000 --name hello-app hello-app
+
+      - name: 배포 확인
         run: |
-          docker run -d -p 3000:3000 --name test-container hello-app
           sleep 5
           curl http://localhost:3000
-          docker stop test-container
